@@ -867,7 +867,6 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
             correct += valid_predicted.eq(valid_label_ids).sum().item()
 
     test_acc = correct/total
-    out = open("/content/Arman-Fold1/output/output-NLC.txt", "w")
     precision, recall, f1 = f1_score(np.array(all_labels), np.array(all_preds))
     #print(all_labels)
     #print(all_preds)
@@ -885,7 +884,6 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
     #print(all_preds_convert)
     #report = classification_report(all_labels_convert, all_preds_convert,digits=4)
     report(np.array(all_labels), np.array(all_preds))
-    out.close()
     end = time.time()
     print('Epoch:%d, Acc:%.2f, Precision: %.2f, Recall: %.2f, F1: %.2f on %s, Spend:%.3f minutes for evaluation' \
         % (epoch_th, 100.*test_acc, 100.*precision, 100.*recall, 100.*f1, dataset_name,(end-start)/60.0))
