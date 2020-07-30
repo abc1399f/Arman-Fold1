@@ -834,7 +834,7 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
                 dictionary.append((prob,file_dictionary))
                
             sort_dictionary=sorted(dictionary, key=lambda tup: tup[0] )
-            print(sort_dictionary)
+            #print(sort_dictionary)
             #num=int(0.025*len(confidence))
             num=488
             count=0
