@@ -784,9 +784,9 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
             all_labels.extend(valid_label_ids.tolist())
             for i in range(len(viterbi_score)):
                 
-                confidence.append(viterbi_score[i])
-                print(viterbi_score[i])
-                print("rand",torch.rand(1))
+                confidence.append(torch.rand(1).item())
+                
+                
             # print(len(valid_label_ids),len(valid_predicted),len(valid_label_ids)==len(valid_predicted))
             total += len(valid_label_ids)
             correct += valid_predicted.eq(valid_label_ids).sum().item()
@@ -834,6 +834,7 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
                 dictionary.append((prob,file_dictionary))
                
             sort_dictionary=sorted(dictionary, key=lambda tup: tup[0] )
+            print(sort_dictionary)
             #num=int(0.025*len(confidence))
             num=488
             count=0
