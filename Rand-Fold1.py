@@ -833,7 +833,7 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
                 file_dictionary = dict(zip(test_examples[i].words, test_examples[i].labels))
                 dictionary.append((prob,file_dictionary))
                
-            sort_dictionary=sorted(dictionary, key=lambda tup: tup[0] )
+            #sort_dictionary=sorted(dictionary, key=lambda tup: tup[0] )
             #print(sort_dictionary)
             #num=int(0.025*len(confidence))
             num=488
@@ -841,7 +841,7 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
             print("len confidence",len(confidence))
             print("numbbbber is :",num)
             nextfile=open("/content/Arman-Fold1/data/Fold1/valid.txt", "w")
-            for key in sort_dictionary:
+            for key in dictionary:
                 count +=1
                 conf=key[0]
                 #print(conf)
