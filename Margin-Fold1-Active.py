@@ -708,8 +708,8 @@ class BERT_CRF_NER(nn.Module):
         bert_feats = self._get_bert_features(input_ids, segment_ids, input_mask)
 
         # Find the best path, given the features.
-        score, label_seq_ids = self._viterbi_decode(bert_feats)
-        return score, label_seq_ids
+        value, score, label_seq_ids = self._viterbi_decode(bert_feats)
+        return value, score, label_seq_ids
 
 
 start_label_id = conllProcessor.get_start_label_id()
