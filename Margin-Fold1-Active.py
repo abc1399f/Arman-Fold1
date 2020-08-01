@@ -686,15 +686,12 @@ class BERT_CRF_NER(nn.Module):
           a=F.softmax(log_delta.squeeze(), dim=1)
           
         value, index=torch.topk(a, 2, dim=-1, largest=True, sorted=True)
-        print(value)
-        print(value[0])
-        print(value[1])
         max_logLL_allz_allx, path[:, -1] = torch.max(a, -1)
         for t in range(T-2, -1, -1):
             # choose the state of z_t according the state choosed of z_t+1.
             path[:, t] = psi[:, t+1].gather(-1,path[:, t+1].view(-1,1)).squeeze()
 
-        return (1/T)*max_logLL_allz_allx, path
+        return value,max_logLL_allz_allx, path
 
     def neg_log_likelihood(self, input_ids, segment_ids, input_mask, label_ids):
         bert_feats = self._get_bert_features(input_ids, segment_ids, input_mask)
@@ -777,7 +774,7 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
         for batch in predict_dataloader:
             batch = tuple(t.to(device) for t in batch)
             input_ids, input_mask, segment_ids, predict_mask, label_ids = batch
-            viterbi_score, predicted_label_seq_ids = model(input_ids, segment_ids, input_mask)
+            value, viterbi_score, predicted_label_seq_ids = model(input_ids, segment_ids, input_mask)
             # _, predicted = torch.max(out_scores, -1)
             #print("HHHHHHHHHHHHHHHHHHHHHHHHHH")
             #print(viterbi_score)
@@ -786,9 +783,9 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
             valid_label_ids = torch.masked_select(label_ids, predict_mask)
             all_preds.extend(valid_predicted.tolist())
             all_labels.extend(valid_label_ids.tolist())
-            for i in range(len(viterbi_score)):
+            for i in range(len(value)):
                 
-                confidence.append(viterbi_score[i])
+                confidence.append(value[i][0]-value[i][1])
             # print(len(valid_label_ids),len(valid_predicted),len(valid_label_ids)==len(valid_predicted))
             total += len(valid_label_ids)
             correct += valid_predicted.eq(valid_label_ids).sum().item()
