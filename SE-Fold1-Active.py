@@ -787,9 +787,12 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
             for i in range(len(value)):
                 sigma=0
                 for j in range(len(value[i])):
-                    sigma= sigma+ (value[i][j] * math.log(value[i][j]))
+                    print(value[i][j].item())
+                    if value[i][j].item() > 0:
+                      #print("miniiii",sigma)
+                      sigma= sigma+ (value[i][j].item() * math.log(value[i][j].item()))
                 confidence.append(sigma)
-                print(sigma)
+                print("sigmaaaaaa",sigma)
             # print(len(valid_label_ids),len(valid_predicted),len(valid_label_ids)==len(valid_predicted))
             total += len(valid_label_ids)
             correct += valid_predicted.eq(valid_label_ids).sum().item()
