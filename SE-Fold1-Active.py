@@ -6,6 +6,7 @@
 import sys
 import os
 import time
+import math
 import importlib
 import numpy as np
 import matplotlib.pyplot as plt
@@ -685,7 +686,7 @@ class BERT_CRF_NER(nn.Module):
         else:
           a=F.softmax(log_delta.squeeze(), dim=1)
           
-        value, index=torch.topk(a, 2, dim=-1, largest=True, sorted=True)
+        value, index=torch.topk(a, 16, dim=-1, largest=True, sorted=True)
         max_logLL_allz_allx, path[:, -1] = torch.max(a, -1)
         for t in range(T-2, -1, -1):
             # choose the state of z_t according the state choosed of z_t+1.
@@ -784,8 +785,11 @@ def evaluate(model, predict_dataloader, batch_size, epoch_th, dataset_name):
             all_preds.extend(valid_predicted.tolist())
             all_labels.extend(valid_label_ids.tolist())
             for i in range(len(value)):
-                
-                confidence.append(value[i][0]-value[i][1])
+                sigma=0
+                for j in range(len(value[i])):
+                    sigma= sigma+ (value[i][j] * math.log(value[i][j]))
+                confidence.append(sigma)
+                print(sigma)
             # print(len(valid_label_ids),len(valid_predicted),len(valid_label_ids)==len(valid_predicted))
             total += len(valid_label_ids)
             correct += valid_predicted.eq(valid_label_ids).sum().item()
